@@ -12,15 +12,14 @@ import NavItem from './NavItem';
 const NavGroup = ({ item }) => {
   const menu = useSelector((state) => state.menu);
   const { drawerOpen } = menu;
-
   const navCollapse = item.children?.map((menuItem) => {
     switch (menuItem.type) {
-      case 'collapse':
-        return (
-          <Typography key={menuItem.id} variant="caption" color="error" sx={{ p: 2.5 }}>
-            collapse - only available in paid version
-          </Typography>
-        );
+      // case 'collapse':
+      //   return (
+      //     <Typography key={menuItem.id} variant="caption" color="error" sx={{ p: 2.5 }}>
+      //       collapse - only available in paid version
+      //     </Typography>
+      //   );
       case 'item':
         return <NavItem key={menuItem.id} item={menuItem} level={1} />;
       default:
@@ -35,11 +34,11 @@ const NavGroup = ({ item }) => {
   return (
     <List
       subheader={
-        item.title &&
+        // item.title &&
         drawerOpen && (
           <Box sx={{ pl: 3, mb: 1.5 }}>
             <Typography variant="subtitle2" color="textSecondary">
-              {item.title}
+              {/* {item.title} */}
             </Typography>
             {/* only available in paid version */}
           </Box>

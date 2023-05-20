@@ -1,32 +1,33 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import { Box, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 // third-party
-import NumberFormat from 'react-number-format';
+// import NumberFormat from 'react-number-format';
 
 // project import
 import Dot from 'components/@extended/Dot';
+import axios from '../../../node_modules/axios/index';
 
-function createData(trackingNo, name, fat, carbs, protein) {
-  return { trackingNo, name, fat, carbs, protein };
-}
+// function createData(hash, blobk, type, status, time, from , to) {
+//   return { hash, blobk, type, status, time, from , to };
+// }
 
-const rows = [
-  createData(84564564, 'Camera Lens', 40, 2, 40570),
-  createData(98764564, 'Laptop', 300, 0, 180139),
-  createData(98756325, 'Mobile', 355, 1, 90989),
-  createData(98652366, 'Handset', 50, 1, 10239),
-  createData(13286564, 'Computer Accessories', 100, 1, 83348),
-  createData(86739658, 'TV', 99, 0, 410780),
-  createData(13256498, 'Keyboard', 125, 2, 70999),
-  createData(98753263, 'Mouse', 89, 2, 10570),
-  createData(98753275, 'Desktop', 185, 1, 98063),
-  createData(98753291, 'Chair', 100, 0, 14001)
-];
+// const rows = [
+//   createData(84564564, 'Camera Lens', 40, 2, 40570, 1, 1),
+//   createData(98764564, 'Laptop', 300, 0, 180139),
+//   createData(98756325, 'Mobile', 355, 1, 90989),
+//   createData(98652366, 'Handset', 50, 1, 10239),
+//   createData(13286564, 'Computer Accessories', 100, 1, 83348),
+//   createData(86739658, 'TV', 99, 0, 410780),
+//   createData(13256498, 'Keyboard', 125, 2, 70999),
+//   createData(98753263, 'Mouse', 89, 2, 10570),
+//   createData(98753275, 'Desktop', 185, 1, 98063),
+//   createData(98753291, 'Chair', 100, 0, 14001)
+// ];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -58,35 +59,47 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: 'trackingNo',
+    id: 'Txn Hash',
     align: 'left',
     disablePadding: false,
-    label: 'Tracking No.'
+    label: 'Transaction Hash'
   },
   {
-    id: 'name',
+    id: 'Block',
     align: 'left',
     disablePadding: true,
-    label: 'Product Name'
+    label: 'Block'
   },
   {
-    id: 'fat',
-    align: 'right',
+    id: 'type',
+    align: 'left',
     disablePadding: false,
-    label: 'Total Order'
+    label: 'Type'
   },
   {
-    id: 'carbs',
+    id: 'status',
     align: 'left',
     disablePadding: false,
 
     label: 'Status'
   },
+  // {
+  //   id: 'time',
+  //   align: 'left',
+  //   disablePadding: false,
+  //   label: 'Create Time'
+  // },
   {
-    id: 'protein',
-    align: 'right',
+    id: 'from',
+    align: 'left',
     disablePadding: false,
-    label: 'Total Amount'
+    label: 'From'
+  },
+  {
+    id: 'time',
+    align: 'left',
+    disablePadding: false,
+    label: 'To'
   }
 ];
 
@@ -127,9 +140,9 @@ const OrderStatus = ({ status }) => {
       color = 'warning';
       title = 'Pending';
       break;
-    case 1:
+    case 5:
       color = 'success';
-      title = 'Approved';
+      title = 'Verified';
       break;
     case 2:
       color = 'error';
@@ -148,17 +161,61 @@ const OrderStatus = ({ status }) => {
   );
 };
 
+const OrderType = ({ status }) => {
+  let title;
+
+  switch (status) {
+    case 1:
+      title = 'Withdraw';
+      break;
+    case 2:
+      title = 'Deposit';
+      break;
+    case 5:
+      title = 'Register';
+      break;
+    default:
+      title = 'None';
+  }
+
+  return (
+    <Stack direction="row" spacing={1} alignItems="center">
+      <Typography>{title}</Typography>
+    </Stack>
+  );
+};
+const Shorten = ({item}) =>{
+  let string = item
+
+  if(string.length >= 10){
+    string = string.slice(0, 7) + "..." + string.slice(string.length-8, string.length-1)
+  }
+  return (
+    <Stack direction="row" spacing={1} alignItems="center">
+      <Typography>{string}</Typography>
+    </Stack>
+  );
+}
 OrderStatus.propTypes = {
   status: PropTypes.number
 };
 
 // ==============================|| ORDER TABLE ||============================== //
-
+const baseURL = "https://testapi.zkbnbchain.org/api/v1/txs?offset=0&limit=20";
 export default function OrderTable() {
   const [order] = useState('asc');
   const [orderBy] = useState('trackingNo');
   const [selected] = useState([]);
-
+  const [transactions, setTransactions] = useState([])
+    useEffect(()=>{
+      axios.get(baseURL).then((response) => {
+          let arr = response.data.txs
+          const compareByIndex = (a, b) => a.index - b.index;
+          arr.sort(compareByIndex);
+          setTransactions(arr);
+      })
+      .catch((err)=>console.log(err))
+  }, [])
   const isSelected = (trackingNo) => selected.indexOf(trackingNo) !== -1;
 
   return (
@@ -186,7 +243,7 @@ export default function OrderTable() {
         >
           <OrderTableHead order={order} orderBy={orderBy} />
           <TableBody>
-            {stableSort(rows, getComparator(order, orderBy)).map((row, index) => {
+            {transactions && stableSort(transactions, getComparator(order, orderBy)).map((row, index) => {
               const isItemSelected = isSelected(row.trackingNo);
               const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -202,16 +259,22 @@ export default function OrderTable() {
                 >
                   <TableCell component="th" id={labelId} scope="row" align="left">
                     <Link color="secondary" component={RouterLink} to="">
-                      {row.trackingNo}
+                      <Shorten item={row.hash}/>
+                      {/* {}? */}
                     </Link>
                   </TableCell>
-                  <TableCell align="left">{row.name}</TableCell>
-                  <TableCell align="right">{row.fat}</TableCell>
+                  <TableCell align="left">{row.block_height}</TableCell>
                   <TableCell align="left">
-                    <OrderStatus status={row.carbs} />
+                    <OrderType status={row.type}/>
                   </TableCell>
-                  <TableCell align="right">
-                    <NumberFormat value={row.protein} displayType="text" thousandSeparator prefix="$" />
+                  <TableCell align="left">
+                    <OrderStatus status={row.status} />
+                  </TableCell>
+                  <TableCell align="left">
+                    <Shorten item={row.from_l1_address}/>
+                  </TableCell>
+                  <TableCell align="left">
+                    <Shorten item={row.to_l1_address}/>
                   </TableCell>
                 </TableRow>
               );

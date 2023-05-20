@@ -30,6 +30,7 @@ const NavItem = ({ item, level }) => {
   }
 
   const itemHandler = (id) => {
+    console.log(id)
     dispatch(activeItem({ openItem: [id] }));
   };
 
@@ -47,7 +48,6 @@ const NavItem = ({ item, level }) => {
 
   const textColor = 'text.primary';
   const iconSelectedColor = 'primary.main';
-
   return (
     <ListItemButton
       {...listItemProps}

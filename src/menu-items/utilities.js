@@ -5,7 +5,11 @@ import {
   BarcodeOutlined,
   BgColorsOutlined,
   FontSizeOutlined,
-  LoadingOutlined
+  LoadingOutlined,
+  TransactionOutlined,
+  BlockOutlined,
+  AccountBookOutlined,
+  MoneyCollectOutlined
 } from '@ant-design/icons';
 
 // icons
@@ -15,7 +19,11 @@ const icons = {
   BarcodeOutlined,
   AntDesignOutlined,
   LoadingOutlined,
-  AppstoreAddOutlined
+  AppstoreAddOutlined,
+  TransactionOutlined,
+  BlockOutlined,
+  AccountBookOutlined,
+  MoneyCollectOutlined
 };
 
 // ==============================|| MENU ITEMS - UTILITIES ||============================== //
@@ -26,34 +34,42 @@ const utilities = {
   type: 'group',
   children: [
     {
-      id: 'util-typography',
-      title: 'Typography',
+      id: 'util-transactions',
+      title: 'Transactions',
       type: 'item',
-      url: '/typography',
-      icon: icons.FontSizeOutlined
+      url: '/transactions',
+      icon: icons.TransactionOutlined
     },
     {
-      id: 'util-color',
-      title: 'Color',
+      id: 'util-blocks',
+      title: 'Blocks',
       type: 'item',
-      url: '/color',
-      icon: icons.BgColorsOutlined
+      url: '/blocks',
+      icon: icons.BlockOutlined
     },
     {
-      id: 'util-shadow',
-      title: 'Shadow',
+      id: 'util-accounts',
+      title: 'Accounts',
       type: 'item',
-      url: '/shadow',
-      icon: icons.BarcodeOutlined
+      url: '/accounts',
+      icon: icons.AccountBookOutlined
     },
     {
-      id: 'ant-icons',
-      title: 'Ant Icons',
+      id: 'assets',
+      title: 'Assets',
       type: 'item',
-      url: '/icons/ant',
-      icon: icons.AntDesignOutlined,
+      url: '/assets',
+      icon: icons.MoneyCollectOutlined,
       breadcrumbs: false
-    }
+    },
+    // {
+    //   id: 'ant-asd',
+    //   title: 'asd',
+    //   type: 'item',
+    //   url: '/icons/ant',
+    //   icon: icons.AntDesignOutlined,
+    //   breadcrumbs: false
+    // }
   ]
 };
 
